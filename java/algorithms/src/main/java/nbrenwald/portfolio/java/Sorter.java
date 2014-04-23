@@ -96,77 +96,88 @@ public class Sorter {
     }
   }
 
-  public static void quickSort(int[] arrayToSort, int[] tempArray, int start, int length) {
+  public static void quickSortSpaceInefficient(int[] inArray, int[] tempArray, int start, int length) {
     // Inefficient quicksort algo using O(n) extra space for the tempArray.
     // start is the starting position of our array to sort.
     // length gives us how many elements are contained.
-    System.out.print("Calling quickSort current Array = ");
-    printArray(arrayToSort, 0, arrayToSort.length);
-    System.out.print("Section To Sort = ");
-    printArray(arrayToSort, start, length);
-    System.out.println("Start = " + start);
-    System.out.println("Length = " + length);
-
-    if (arrayToSort != null && length > 1) { // if array is empty, or 1 element, then its sorted.
+    
+    if (inArray != null && length > 1) { // if array is empty, or 1 element, then its sorted.
 
 
       // Pick pivot
       int pivotIndex = (length / 2) + start;
-      int pivotValue = arrayToSort[pivotIndex];
-      System.out.println("Pivot = " + pivotValue);
+      int pivotValue = inArray[pivotIndex];
 
       // Now the partition, working with a pointer working from start called lessPointer and a
       // pointer
       // starting from the beginning called morePointer
       int lessPointer = start;
       int morePointer = start + length - 1;
-      System.out.println("Less Pointer = " + lessPointer);
-      System.out.println("More Pointer = " + morePointer);
       for (int i = start; i <= start + length - 1; i++) {
-        if (arrayToSort[i] < pivotValue) {
-          tempArray[lessPointer] = arrayToSort[i];
+        if (inArray[i] < pivotValue) {
+          tempArray[lessPointer] = inArray[i];
           lessPointer++;// because we are incrementing, we may have to subtract 1 later to move back
                         // to the end
-        } else if (arrayToSort[i] > pivotValue) {
-          tempArray[morePointer] = arrayToSort[i];
+        } else if (inArray[i] > pivotValue) {
+          tempArray[morePointer] = inArray[i];
           morePointer--;// because we are decrementing, we may have to subtract 1 later to move back
                         // to the end
         }
       }
-      System.out.print("Partitioned Array = ");
-      printArray(tempArray, start, length);
-
       // Lets copy items less than pivot into the correct place
       for (int i = start; i < lessPointer; i++) {
-        arrayToSort[i] = tempArray[i];
+        inArray[i] = tempArray[i];
       }
       // lets copy in the pivot
-      arrayToSort[lessPointer] = pivotValue;
+      inArray[lessPointer] = pivotValue;
 
       // lets copy in values greater than pivot
       for (int i = morePointer + 1; i < start + length; i++) {
-        arrayToSort[i] = tempArray[i];
+        inArray[i] = tempArray[i];
       }
 
-
-      System.out.print("Original Array after copy = ");
-      printArray(arrayToSort, start, length);
-      System.out.println("Less Pointer = " + lessPointer);
-      System.out.println("More Pointer = " + morePointer);
-      quickSort(arrayToSort, tempArray, start, lessPointer - start);
-      quickSort(arrayToSort, tempArray, morePointer + 1, (start + length) - (morePointer + 1));
-
-
+      quickSortSpaceInefficient(inArray, tempArray, start, lessPointer - start);
+      quickSortSpaceInefficient(inArray, tempArray, morePointer + 1, (start + length)
+          - (morePointer + 1));
     }
 
   }
 
-  private static void printArray(int[] inArray, int start, int length) {
-    for (int i = start; i < start + length; i++) {
-      System.out.print(inArray[i] + " , ");
+  public static void quickSort(int[] inArray, int startIndex, int endIndex) {
+    // If length is less than 2 then there is nothing to do as the array is either empty or sorted.
+    if (inArray != null && startIndex < endIndex) {
+      int pivotIndex = partition(inArray, startIndex, endIndex);
+      quickSort(inArray, startIndex, pivotIndex - 1);
+      quickSort(inArray, pivotIndex + 1, endIndex);
     }
-    System.out.println();
   }
 
+  public static int partition(int[] inArray, int startIndex, int endIndex) {
+    int pivotValue = inArray[startIndex];
+    int i = startIndex;
+    int j = endIndex;
 
+    while (i < j) {
+      while (inArray[i] <= pivotValue && i < endIndex) {
+        i++;
+      }
+      while (inArray[j] > pivotValue && j > startIndex) {
+        j--;
+      }
+      if (i < j) {
+        int tmp = inArray[i];
+        inArray[i] = inArray[j];
+        inArray[j] = tmp;
+      }
+      else {
+        //If we arrive here, we are either at the very start of the list as the smallest element was there,
+        // or we are at the end of the list was descending order,
+        // or we maybe complete and its simply time to put the pivot into the correct place.
+        inArray[startIndex] = inArray[j];
+        inArray[j] = pivotValue;
+        return j;
+      }
+    }
+    return -1;
+    }
 }
