@@ -183,7 +183,7 @@ public class Sorter {
   
   public static void countingSort(int[] inArray){
     // Works on inArray of n elements where all elements in the range {0,1,2...k}.
-    // Could be suitable if we are counting something like ages
+    // Could be suitable if we are sorting something like human age. 
     if(inArray!=null && inArray.length>1){
       // Step 1. Iterate through the array one time to find the max element. Cost O(n).
       int max = inArray[0];
@@ -192,7 +192,6 @@ public class Sorter {
           max = i;
         }
       }
-      System.out.println("Max is "+max);
       
       // Now make a working array of length max. We use max + 1 to account for indexes starting at position 0.
       int[] tempArray = new int[max+1];
