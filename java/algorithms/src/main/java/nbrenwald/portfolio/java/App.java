@@ -15,9 +15,9 @@ public class App
 	
     public static void main( String[] args )
     {
-    	int[] anArray = {1,2,3,4,5,6,6};
+    	int[] anArray = {1,0,4};
     	printArray(anArray);
-    	Sorter.quickSort(anArray, 0, anArray.length-1);
+    	Sorter.countingSort(anArray);
     	printArray(anArray);
     	
     }

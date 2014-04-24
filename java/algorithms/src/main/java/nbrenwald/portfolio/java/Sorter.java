@@ -180,4 +180,44 @@ public class Sorter {
     }
     return -1;
     }
+  
+  public static void countingSort(int[] inArray){
+    // Works on inArray of n elements where all elements in the range {0,1,2...k}.
+    // Could be suitable if we are counting something like ages
+    if(inArray!=null && inArray.length>1){
+      // Step 1. Iterate through the array one time to find the max element. Cost O(n).
+      int max = inArray[0];
+      for(int i : inArray){
+        if(i>max){
+          max = i;
+        }
+      }
+      System.out.println("Max is "+max);
+      
+      // Now make a working array of length max. We use max + 1 to account for indexes starting at position 0.
+      int[] tempArray = new int[max+1];
+      
+      // Initialize working array to 0. Cost O(max).
+      for(int i = 0; i< tempArray.length; i++){
+        tempArray[i] = 0;
+      }
+      
+      // Now iterate through inArray, counting occurrences cost O(n)
+      for(int i : inArray){
+        tempArray[i]++;
+      }
+      
+      // Now iterate through tempArray and write contents back into inArray. Cost O(max)
+      int m =0;
+      for(int i =0; i<tempArray.length; i++){
+        if(tempArray[i]!=0){
+          for(int j = 0; j <tempArray[i]; j++){
+            inArray[m] = i;
+            m++;
+          }
+        }
+      }
+      
+    }
+  }
 }
