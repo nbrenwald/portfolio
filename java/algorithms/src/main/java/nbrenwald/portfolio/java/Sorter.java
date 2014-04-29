@@ -1,5 +1,6 @@
 package nbrenwald.portfolio.java;
 
+
 public class Sorter {
 
   public static void bubbleSort(int[] inArray) {
@@ -100,7 +101,7 @@ public class Sorter {
     // Inefficient quicksort algo using O(n) extra space for the tempArray.
     // start is the starting position of our array to sort.
     // length gives us how many elements are contained.
-    
+
     if (inArray != null && length > 1) { // if array is empty, or 1 element, then its sorted.
 
 
@@ -168,9 +169,9 @@ public class Sorter {
         int tmp = inArray[i];
         inArray[i] = inArray[j];
         inArray[j] = tmp;
-      }
-      else {
-        //If we arrive here, we are either at the very start of the list as the smallest element was there,
+      } else {
+        // If we arrive here, we are either at the very start of the list as the smallest element
+        // was there,
         // or we are at the end of the list was descending order,
         // or we maybe complete and its simply time to put the pivot into the correct place.
         inArray[startIndex] = inArray[j];
@@ -179,20 +180,20 @@ public class Sorter {
       }
     }
     return -1;
-    }
-  
+  }
+
   public static void heapify(int[] inArray) {
     // Starting with the right most parent node. Call siftDown on all higher nodes.
     // This is order O(n)
-    int endPointer = inArray.length-1;
+    int endPointer = inArray.length - 1;
     for (int i = ((endPointer - 1) / 2); i >= 0; i--) {
       siftDown(inArray, i, endPointer);
 
     }
   }
-  
+
   public static void siftDown(int[] inArray, int node, int end) {
-    // Check the left child and right child, swap the current node with the the largest child 
+    // Check the left child and right child, swap the current node with the the largest child
     // which is greater than the current node.
     int leftChild = (2 * node) + 1;
     int rightChild = (2 * node) + 2;
@@ -212,59 +213,121 @@ public class Sorter {
       siftDown(inArray, largest, end);
     }
   }
-  
-  public static void heapSort(int[] inArray){
-    if(inArray != null && inArray.length>1){
-    // First build a heap.
-    heapify(inArray);
-    
-    for(int i = inArray.length-1;i>0;i--){
-      // Swap
-      int tmp=inArray[0];
-      inArray[0]=inArray[i];
-      inArray[i]=tmp;
-      // Sift Down new member
-      siftDown(inArray, 0, i-1);
-    } 
+
+  public static void heapSort(int[] inArray) {
+    if (inArray != null && inArray.length > 1) {
+      // First build a heap.
+      heapify(inArray);
+
+      for (int i = inArray.length - 1; i > 0; i--) {
+        // Swap
+        int tmp = inArray[0];
+        inArray[0] = inArray[i];
+        inArray[i] = tmp;
+        // Sift Down new member
+        siftDown(inArray, 0, i - 1);
+      }
     }
   }
-  
-  public static void countingSort(int[] inArray){
-    // Works on inArray of n elements where all elements in the range {0,1,2...k}.
-    // Could be suitable if we are sorting something like human age. 
-    if(inArray!=null && inArray.length>1){
+
+
+
+  public static void radixSort(int[] inArray) {
+
+    if (inArray != null && inArray.length > 1) {
       // Step 1. Iterate through the array one time to find the max element. Cost O(n).
       int max = inArray[0];
-      for(int i : inArray){
-        if(i>max){
+      for (int i : inArray) {
+        if (i > max) {
           max = i;
         }
       }
-      
-      // Now make a working array of length max. We use max + 1 to account for indexes starting at position 0.
-      int[] tempArray = new int[max+1];
-      
+
+      int[] tempArray = new int[inArray.length];
+
+      // We want to sort on least significant digit, then next and so on
+      for (int i = 0; max >= Math.pow(10, i); i++) {
+        int[] buckets = new int[10];
+
+        // First we need to go through the array and update a counter based on the digit we are
+        // working on
+        for (int j = 0; j < inArray.length; j++) {
+          // Move to correct place in radixArray
+
+          buckets[((inArray[j] / (int) Math.pow(10, i)) % 10)]++;
+        }
+
+        // next calculate a running sum
+        for (int j = 1; j < buckets.length; j++) {
+          buckets[j] += buckets[j - 1];
+        }
+
+        // Now we can work backwards through the original array inArray.
+        // For each element, we see where it would have been placed, we can then see how many
+        // elements appear before it,
+        // so we know its position in the output array tempArray.
+        for (int j = inArray.length - 1; j >= 0; j--) {
+          int tmpIndex = (inArray[j] / (int) Math.pow(10, i)) % 10;
+          int howManySmaller = buckets[tmpIndex];
+          buckets[tmpIndex] -= 1;
+          tempArray[howManySmaller - 1] = inArray[j];
+        }
+
+        // Finally we copy back tempArray into the inArray, i.e. we have finished sorting on digit i
+        for (int j = 0; j < inArray.length; j++) {
+          inArray[j] = tempArray[j];
+        }
+      }
+    }
+
+  }
+
+  public static void countingSort(int[] inArray) {
+    // Works on inArray of n elements where all elements in the range {0,1,2...k}.
+    // Could be suitable if we are sorting something like human age.
+    if (inArray != null && inArray.length > 1) {
+      // Step 1. Iterate through the array one time to find the max element. Cost O(n).
+      int max = inArray[0];
+      for (int i : inArray) {
+        if (i > max) {
+          max = i;
+        }
+      }
+
+      // Now make a working array of length max. We use max + 1 to account for indexes starting at
+      // position 0.
+      int[] tempArray = new int[max + 1];
+
       // Initialize working array to 0. Cost O(max).
-      for(int i = 0; i< tempArray.length; i++){
+      for (int i = 0; i < tempArray.length; i++) {
         tempArray[i] = 0;
       }
-      
+
       // Now iterate through inArray, counting occurrences cost O(n)
-      for(int i : inArray){
+      for (int i : inArray) {
         tempArray[i]++;
       }
-      
+
       // Now iterate through tempArray and write contents back into inArray. Cost O(max)
-      int m =0;
-      for(int i =0; i<tempArray.length; i++){
-        if(tempArray[i]!=0){
-          for(int j = 0; j <tempArray[i]; j++){
+      int m = 0;
+      for (int i = 0; i < tempArray.length; i++) {
+        if (tempArray[i] != 0) {
+          for (int j = 0; j < tempArray[i]; j++) {
             inArray[m] = i;
             m++;
           }
         }
       }
-      
+
     }
+  }
+
+  // helper function for debugging
+  public static void printArray(int[] inArray) {
+    for (int i : inArray) {
+      System.out.print(i + ", ");
+    }
+    System.out.println();
+
   }
 }

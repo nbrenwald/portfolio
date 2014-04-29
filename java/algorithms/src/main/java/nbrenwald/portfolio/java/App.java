@@ -6,19 +6,13 @@ package nbrenwald.portfolio.java;
  */
 public class App 
 {
-	private static void printArray(int[] inArray){
-		for(int i = 0; i < inArray.length; i++){
-			System.out.print(inArray[i]+" , ");
-		}
-		System.out.println();
-	}
 	
     public static void main( String[] args )
     {
-    	int[] anArray = {1,0,4};
-    	printArray(anArray);
-    	Sorter.countingSort(anArray);
-    	printArray(anArray);
+    	int[] anArray = {10,9,8,7,6,5,4,3,2,1};
+    	Sorter.quickSort(anArray,0,0);
+    	Sorter.printArray(anArray);
+    	
     	
     }
 }

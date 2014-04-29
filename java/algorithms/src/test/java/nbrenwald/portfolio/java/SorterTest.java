@@ -21,7 +21,7 @@ public class SorterTest {
   private static final int[] EMPTY_ARRAY = new int[0];
   private static final int[] NULL_ARRAY = null;
   private static final int[] SORTED_ASCENDING_ARRAY = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-  private static final int[] SORTED_DESCENDING_ARRAY = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+  private static final int[] SORTED_DESCENDING_ARRAY = {10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
   private static final int[] UNSORTED_ARRAY = new int[SIZE];
   private static int[] sortedArray = new int[SIZE];
@@ -30,7 +30,7 @@ public class SorterTest {
   public static void setupTestArrays() {
 
     for (int i = 0; i < SIZE; i++) {
-      UNSORTED_ARRAY[i] = (int) (Math.random() * 10);
+      UNSORTED_ARRAY[i] = (int) (Math.random() * 100);
     }
 
     sortedArray = Arrays.copyOf(UNSORTED_ARRAY, UNSORTED_ARRAY.length);
@@ -47,6 +47,7 @@ public class SorterTest {
     Sorter.heapSort(NULL_ARRAY);
     Sorter.quickSort(NULL_ARRAY, 0, 0);
     Sorter.countingSort(NULL_ARRAY);
+    Sorter.radixSort(NULL_ARRAY);
     assertNull(NULL_ARRAY);
   }
 
@@ -59,6 +60,7 @@ public class SorterTest {
     Sorter.heapSort(EMPTY_ARRAY);
     Sorter.quickSort(EMPTY_ARRAY, 0, 0);
     Sorter.countingSort(EMPTY_ARRAY);
+    Sorter.radixSort(EMPTY_ARRAY);
     assertEquals(EMPTY_ARRAY.length, 0);
   }
 
@@ -80,7 +82,7 @@ public class SorterTest {
     tmp = Arrays.copyOf(SORTED_ASCENDING_ARRAY, SORTED_ASCENDING_ARRAY.length);
     Sorter.mergeSort(tmp);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
-    
+
     tmp = Arrays.copyOf(SORTED_ASCENDING_ARRAY, SORTED_ASCENDING_ARRAY.length);
     Sorter.heapSort(tmp);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
@@ -92,6 +94,10 @@ public class SorterTest {
     tmp = Arrays.copyOf(SORTED_ASCENDING_ARRAY, SORTED_ASCENDING_ARRAY.length);
     Sorter.countingSort(tmp);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
+
+    tmp = Arrays.copyOf(SORTED_ASCENDING_ARRAY, SORTED_ASCENDING_ARRAY.length);
+    Sorter.radixSort(tmp);
+    assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
   }
 
   @Test
@@ -99,6 +105,7 @@ public class SorterTest {
     int[] tmp;
     tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
     Sorter.bubbleSort(tmp);
+
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
 
     tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
@@ -112,17 +119,21 @@ public class SorterTest {
     tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
     Sorter.mergeSort(tmp);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
-    
+
     tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
     Sorter.heapSort(tmp);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
 
     tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
-    Sorter.quickSort(tmp, 0, 0);
+    Sorter.quickSort(tmp, 0, SORTED_DESCENDING_ARRAY.length - 1);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
 
     tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
     Sorter.countingSort(tmp);
+    assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
+
+    tmp = Arrays.copyOf(SORTED_DESCENDING_ARRAY, SORTED_DESCENDING_ARRAY.length);
+    Sorter.radixSort(tmp);
     assertTrue(Arrays.equals(tmp, SORTED_ASCENDING_ARRAY));
   }
 
@@ -153,14 +164,14 @@ public class SorterTest {
     Sorter.quickSort(tmp, 0, UNSORTED_ARRAY.length - 1);
     assertTrue(Arrays.equals(tmp, sortedArray));
   }
-  
+
   @Test
   public void testHeapSort() {
     int[] tmp = Arrays.copyOf(UNSORTED_ARRAY, UNSORTED_ARRAY.length);
     Sorter.heapSort(tmp);
     assertTrue(Arrays.equals(tmp, sortedArray));
   }
-  
+
   @Test
   public void testHeapify() {
     int[] tmp = Arrays.copyOf(UNSORTED_ARRAY, UNSORTED_ARRAY.length);
@@ -181,12 +192,19 @@ public class SorterTest {
     Sorter.countingSort(tmp);
     assertTrue(Arrays.equals(tmp, sortedArray));
   }
-  
+
+  @Test
+  public void testRadixSort() {
+    int[] tmp = Arrays.copyOf(UNSORTED_ARRAY, UNSORTED_ARRAY.length);
+    Sorter.radixSort(tmp);
+    assertTrue(Arrays.equals(tmp, sortedArray));
+  }
+
   private boolean isHeap(int[] inArray) {
     // Check the representation invariant.
     // Start with the leaves, check that all parents are large, then check parents etc.
     int parentIndex;
-    for (int i = inArray.length-1; i > 0; i--) {
+    for (int i = inArray.length - 1; i > 0; i--) {
       parentIndex = (i - 1) / 2;
       if (inArray[parentIndex] < inArray[i]) {
         System.out.println("Parent Index = " + parentIndex + " index = " + i);
