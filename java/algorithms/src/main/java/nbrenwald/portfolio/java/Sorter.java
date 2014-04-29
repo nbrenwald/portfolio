@@ -181,6 +181,54 @@ public class Sorter {
     return -1;
     }
   
+  public static void heapify(int[] inArray) {
+    // Starting with the right most parent node. Call siftDown on all higher nodes.
+    // This is order O(n)
+    int endPointer = inArray.length-1;
+    for (int i = ((endPointer - 1) / 2); i >= 0; i--) {
+      siftDown(inArray, i, endPointer);
+
+    }
+  }
+  
+  public static void siftDown(int[] inArray, int node, int end) {
+    // Check the left child and right child, swap the current node with the the largest child 
+    // which is greater than the current node.
+    int leftChild = (2 * node) + 1;
+    int rightChild = (2 * node) + 2;
+    int largest = node;
+    if (leftChild <= end && inArray[leftChild] > inArray[node]) {
+      largest = leftChild;
+    }
+
+    if (rightChild <= end && inArray[rightChild] > inArray[largest]) {
+      largest = rightChild;
+    }
+
+    if (largest != node) {
+      int tmp = inArray[node];
+      inArray[node] = inArray[largest];
+      inArray[largest] = tmp;
+      siftDown(inArray, largest, end);
+    }
+  }
+  
+  public static void heapSort(int[] inArray){
+    if(inArray != null && inArray.length>1){
+    // First build a heap.
+    heapify(inArray);
+    
+    for(int i = inArray.length-1;i>0;i--){
+      // Swap
+      int tmp=inArray[0];
+      inArray[0]=inArray[i];
+      inArray[i]=tmp;
+      // Sift Down new member
+      siftDown(inArray, 0, i-1);
+    } 
+    }
+  }
+  
   public static void countingSort(int[] inArray){
     // Works on inArray of n elements where all elements in the range {0,1,2...k}.
     // Could be suitable if we are sorting something like human age. 

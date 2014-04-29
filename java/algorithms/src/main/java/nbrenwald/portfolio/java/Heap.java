@@ -73,6 +73,17 @@ public class Heap {
   public int max() {
     return array[0];
   }
+  
+  public void sort(){
+    // The max is already at position 0. 
+    // We can swap with this with the end point, then decrement the end point and call siftDown.
+    int tmp = array[endPointer];
+    array[endPointer] = array[0];
+    array[0]=tmp;
+    endPointer--;
+    siftDown(array,0,endPointer);
+    
+  }
 
   public boolean checkRI() {
     // Check the representation invariant.
