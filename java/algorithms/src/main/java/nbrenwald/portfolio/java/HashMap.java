@@ -5,22 +5,46 @@ import java.util.List;
 
 public class HashMap {
   
-  public HashMap(){
-    for(int i = 0; i < slots.length; i++){
-      slots[i] = new LinkedList<Integer>();
+  private List<Integer>[] hashTable;
+  private int size = 0;
+  private double loadFactor = 0.75; // if #elements stored /#number of slots increases above this, we double the table size.
+  
+  public HashMap(int initialSize){
+    
+    hashTable =  new List[initialSize];
+    for(int i = 0; i < hashTable.length; i++){
+      hashTable[i] = new LinkedList<Integer>();
     }
   }
 
-  private List<Integer>[] slots = new List[100];
   
   private int hash(int value, int slots){
     return value % slots;
   }
+  
+  private void doubleHashTable(){
+    System.out.println("Doubling hash table");
+    List<Integer>[] newHashTable =  new List[hashTable.length*2];
+    for(int i = 0; i < newHashTable.length; i++){
+      newHashTable[i] = new LinkedList<Integer>();
+    }
+    for(List<Integer> li : hashTable){
+      if(li != null){
+        for(Integer i : li){
+          int hashCode = hash(i,hashTable.length*2);
+          newHashTable[hashCode].add(i);
+        }
+      }
+    }
+    
+    hashTable = newHashTable;
+    
+  }
 
   public boolean containsKey(int key) {
  // returns null if key doesn't exist in the hash map.
-    int hashCode = hash(key,slots.length);
-    for(Integer i : slots[hashCode]){
+    int hashCode = hash(key,hashTable.length);
+    for(Integer i : hashTable[hashCode]){
       if(i.equals(key)) return true;
     }
     return false;
@@ -31,8 +55,8 @@ public class HashMap {
  
   public Integer get(int key) {
     // returns null if key doesn't exist in the hash map.
-    int hashCode = hash(key,slots.length);
-    for(Integer i : slots[hashCode]){
+    int hashCode = hash(key,hashTable.length);
+    for(Integer i : hashTable[hashCode]){
       if(i.equals(key)) return i;
     }
     return null;
@@ -40,14 +64,24 @@ public class HashMap {
 
  
   public void put(int key) {
-    int hashCode = hash(key,slots.length);
-    slots[hashCode].add(key);
+    int hashCode = hash(key,hashTable.length);
+    hashTable[hashCode].add(key);
+    size ++;
+    if(size / hashTable.length >=0.75){
+      doubleHashTable();
+    }
     
   }
 
   public void remove(int key) {
-    int hashCode = hash(key,slots.length);
-    slots[hashCode].remove(Integer.valueOf(key));
+    int hashCode = hash(key,hashTable.length);
+    hashTable[hashCode].remove(Integer.valueOf(key));
+    size --;
+  }
+
+
+  public int size() {
+    return size;
   }
 
 }
