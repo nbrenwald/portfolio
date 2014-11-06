@@ -2,10 +2,12 @@ package nbrenwald.portfolio.java;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class HashMap {
   
   private List<Integer>[] hashTable;
+  private Map<Integer, String> map = new java.util.HashMap<>();
   private int size = 0;
   private double loadFactor = 0.75; // if #elements stored /#number of slots increases above this, we double the table size.
   

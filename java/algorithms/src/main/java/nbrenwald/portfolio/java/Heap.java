@@ -1,110 +1,109 @@
 package nbrenwald.portfolio.java;
+public class Heap<T extends Comparable<T>>{
+private int capacity=16;
+private T[] heap;
+private int end = 0;
 
-public class Heap {
-  // Parent = i-1/2
-  // left child = i*2+1
-  // right child = i*2+2
+public Heap(){
+  heap = (T[]) new Comparable[capacity];
+}
 
-  private int[] array;
-  private int endPointer;
+public void resize(int newCapacity){
+}
 
-  private Heap() {}
+public void insert(T t){
+ heap[end]=t;
+ siftUp(end);
+ end++;
+ if(!checkHeap(0)) throw new IllegalStateException("extract min broke heap property");
+}
 
+public boolean contains(T t){
+ return false;
+}
 
-  private Heap(int[] inArray, int i) {
-    array = inArray;
-    endPointer = i;
-  }
+public T extractMin(){
+ if(end==0)return null;
+ T value = heap[0];
+ heap[0]=heap[end-1];
+ end--;
+ siftDown(0);
+ if(!checkHeap(0)) throw new IllegalStateException("extract min broke heap property");
+ return value;
+}
 
+private boolean checkHeap(int index){
+int left = (index*2)+1;
+int right = (index*2)+2;
+if(left >=end && right >=end)return true;
+if(left < end && heap[left].compareTo(heap[index]) < 0)return false;
+if(right < end && heap[right].compareTo(heap[index]) < 0)return false;
+return checkHeap(left) & checkHeap(right);
+}
 
-  public static Heap emptyHeap() {
-    return new Heap();
-  }
+public T getMin(){
+  return (end==0)?null:heap[0];
+}
 
-  private static void siftDown(int[] inArray, int node, int end) {
-    // Check the left child and right child, swap the current node with the the largest child 
-    // which is greater than the current node.
-    int leftChild = (2 * node) + 1;
-    int rightChild = (2 * node) + 2;
-    int largest = node;
-    if (leftChild <= end && inArray[leftChild] > inArray[node]) {
-      largest = leftChild;
-    }
+private void siftDown(int index){
+//called after extractMin
+int indexOfSmallest = index;
+int left = (index*2)+1;
+int right = (index*2)+2;
+if(left<end && heap[left].compareTo(heap[index]) < 0) indexOfSmallest = left;
+if(right<end && heap[right].compareTo( heap[indexOfSmallest] )< 0)indexOfSmallest = right;
+ if(indexOfSmallest != index){
+  T tmp = heap[index];
+  heap[index] = heap[indexOfSmallest];
+  heap[indexOfSmallest] = tmp;
+  siftDown(indexOfSmallest);
+ }
+}
 
-    if (rightChild <= end && inArray[rightChild] > inArray[largest]) {
-      largest = rightChild;
-    }
+private void siftUp(int index){
+int parent = (index-1)/2;
+ if(parent>=0 && heap[parent].compareTo( heap[index]) >0){
+  T tmp = heap[parent];
+  heap[parent] = heap[index];
+  heap[index] = tmp;
+  siftUp(parent);
+ }
+}
 
-    if (largest != node) {
-      int tmp = inArray[node];
-      inArray[node] = inArray[largest];
-      inArray[largest] = tmp;
-      siftDown(inArray, largest, end);
-    }
-  }
+@Override
+public String toString(){
+ String result = "Size = "+end+"\n";
+ for(int i = 0 ; i < end ; i ++){
+  result+= heap[i] +" : ";
+ }
+ return result;
+}
 
-  private static void heapify(int[] inArray, int endPointer) {
-    // Starting with the right most parent node. Call siftDown on all higher nodes.
-    // This is order O(n)
-    for (int i = ((endPointer - 1) / 2); i >= 0; i--) {
-      siftDown(inArray, i, endPointer);
-
-    }
-  }
-
-
-
-  public static Heap fromArray(int[] inArray) {
-    // Static Factory to return a heap
-    // Lets clone the array given to us, allowing twice the length for growth
-    int[] newArray = new int[2 * inArray.length];
-    int newEndPointer = inArray.length - 1;
-
-    for (int i = 0; i < inArray.length; i++) {
-      newArray[i] = inArray[i];
-    }
-    Heap.heapify(newArray, newEndPointer);
-    Heap newHeap = new Heap(newArray, newEndPointer);
-    return newHeap;
-
-  }
-
-
-  public int max() {
-    return array[0];
-  }
-  
-  public void sort(){
-    // The max is already at position 0. 
-    // We can swap with this with the end point, then decrement the end point and call siftDown.
-    int tmp = array[endPointer];
-    array[endPointer] = array[0];
-    array[0]=tmp;
-    endPointer--;
-    siftDown(array,0,endPointer);
-    
-  }
-
-  public boolean checkRI() {
-    // Check the representation invariant.
-    // Start with the leaves, check that all parents are large, then check parents etc.
-    int parentIndex;
-    for (int i = endPointer; i > 0; i--) {
-      parentIndex = (i - 1) / 2;
-      if (array[parentIndex] < array[i]) {
-        System.out.println("Parent Index = " + parentIndex + " index = " + i);
-        return false;
-      }
-    }
-    return true;
-
-  }
-
-  private static void print(int[] inArray) {
-    for (int i : inArray) {
-      System.out.print(i + ", ");
-    }
-    System.out.println();
-  }
+public static void main(String[] args){
+ Heap<Integer> h = new Heap<>();
+ System.out.println(h);
+ h.insert(5);
+ System.out.println(h);
+ h.insert(4);
+ System.out.println(h);
+ h.insert(3);
+ System.out.println(h);
+ h.insert(2);
+ System.out.println(h);
+ h.insert(1);
+ System.out.println(h);
+ System.out.println(h.extractMin());
+ System.out.println(h);
+System.out.println(h.extractMin());
+ System.out.println(h);
+System.out.println(h.extractMin());
+ System.out.println(h);
+System.out.println(h.extractMin());
+ System.out.println(h);
+System.out.println(h.extractMin());
+ System.out.println(h);
+System.out.println(h.extractMin());
+ System.out.println(h);
+}
 
 }
